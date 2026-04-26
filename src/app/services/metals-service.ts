@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +8,12 @@ export class MetalsService {
 
   private http = inject(HttpClient);
 
-  private url = 'https://www.gem-logic.com/es/api/live-gold-price/EUR/XAU';
+  private apiKey =
+    'xl0N6qcc6ZSbks2yAy07OeUAh3OsaydPiAscs0VmJJw7KgtQd4udLG8nwx2x%20';
 
-  getMetal(symbol: string): Observable<any> {
-    return this.http.get(
-      `https://www.gem-logic.com/es/api/live-gold-price/EUR/${symbol}`
+  getMetals() {
+    return this.http.get<any>(
+      `https://freegoldprice.org/api/v2?key=${this.apiKey}&action=GSPPJM`
     );
   }
 }

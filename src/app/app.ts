@@ -17,25 +17,40 @@ export class AppComponent implements OnInit {
 
   metalData: any;
 
-  selectedMetal: string = 'XAU';
-  unit: string = 'gram';
-  karat: number = 24;
-  quantity: number = 1;
+  metalSeleccionado: string = 'XAU';
+  unidad: string = 'g';
+  kilates: number = 24;
+  cantidad: number = 1;
   ngOnInit() {
     this.loadMetal();
   }
 
-  loadMetal() {
-    this.metalsService.getMetal(this.selectedMetal).subscribe({
-      next: (res) => {
-        this.metalData = res.data;
-        console.log(res);
-      },
-      error: (err) => {
-        console.error('Error API:', err);
+loadMetal() {
+  this.metalsService.getMetals().subscribe({
+    next: (res) => {
+      console.log(res);
+
+      switch (this.metalSeleccionado) {
+        case 'XAU':
+          this.metalData = res.gold.EUR;
+          break;
+
+        case 'XAG':
+          this.metalData = res.silver.EUR;
+          break;
+
+        case 'XPT':
+          this.metalData = res.platinum.EUR;
+          break;
+
+        case 'XPD':
+          this.metalData = res.palladium.EUR;
+          break;
       }
-    });
-  }
+    },
+    error: (err) => console.error(err)
+  });
+}
 
   onMetalChange() {
     this.loadMetal();
@@ -44,9 +59,32 @@ export class AppComponent implements OnInit {
   getTotalPrice(): number {
     if (!this.metalData) return 0;
 
-    const pricePerGram = this.metalData.price_per_gram;
+    let precio = Number(this.metalData.price_per_gram);
+    const cantidad = Number(this.cantidad);
 
-    return pricePerGram * this.quantity;
+    switch (this.unidad) {
+      case 'g':
+        precio = Number(this.metalData.price_per_gram);
+        break;
+
+      case 'oz':
+        precio = Number(this.metalData.price_per_troy_ounce);
+        break;
+
+      case 'kg':
+        precio = Number(this.metalData.price_per_gram) * 1000;
+        break;
+
+      case 'lb':
+        precio = Number(this.metalData.price_per_gram) * 453.592;
+        break;
+    }
+
+    if (this.metalSeleccionado === 'XAU') {
+      precio = precio * (this.kilates / 24);
+    }
+
+    return precio * cantidad;
   }
 
   protected readonly title = signal('webMetales');

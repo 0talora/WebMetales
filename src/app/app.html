@@ -1,7 +1,7 @@
 <h2>Cotización de Metales</h2>
 
 <label>Metal:</label>
-<select [(ngModel)]="selectedMetal" (change)="onMetalChange()">
+<select [(ngModel)]="metalSeleccionado" (ngModelChange)="onMetalChange()">
   <option value="XAU">Oro</option>
   <option value="XAG">Plata</option>
   <option value="XPT">Platino</option>
@@ -11,8 +11,8 @@
 <br><br>
 
 <label>Unidad:</label>
-<select [(ngModel)]="unit">
-  <option value="gram">Gramo</option>
+<select [(ngModel)]="unidad">
+  <option value="g">Gramos</option>
   <option value="oz">Onza</option>
   <option value="kg">Kilogramo</option>
   <option value="lb">Libra</option>
@@ -21,33 +21,35 @@
 <br><br>
 
 <label>Cantidad:</label>
-<input type="number" [(ngModel)]="quantity" min="0" />
-
+<input type="number" [(ngModel)]="cantidad" min="1" step="0.01" />
 <br><br>
 
-<div *ngIf="selectedMetal === 'XAU'">
+<div *ngIf="metalSeleccionado === 'XAU'">
   <label>Quilates:</label>
-  <select [(ngModel)]="karat">
-    <option value="24">24K</option>
-    <option value="22">22K</option>
-    <option value="18">18K</option>
-    <option value="14">14K</option>
+  <select [(ngModel)]="kilates">
+    <option [ngValue]="24">24K</option>
+    <option [ngValue]="22">22K</option>
+    <option [ngValue]="20">20K</option>
+    <option [ngValue]="18">18K</option>
+    <option [ngValue]="16">16K</option>
+    <option [ngValue]="14">14K</option>
+    <option [ngValue]="12">12K</option>
+    <option [ngValue]="10">10K</option>
   </select>
 </div>
 
 <hr>
-  <p>📊 Cantidad: {{ quantity }}</p>
+  <p>📊 Cantidad: {{ cantidad }}</p>
 
   <p>💎 Precio total: {{ getTotalPrice() | number:'1.2-2' }} €</p>
 <div *ngIf="metalData">
-
+<p>Precio compra: {{ metalData.ask }} €</p>
+<p>Precio venta: {{ metalData.bid }} €</p>
   <p>💰 Precio base (g): {{ metalData.price_per_gram }} €</p>
   <p>🏅 Precio onza: {{ metalData.price_per_troy_ounce }} €</p>
 
-  <p>📦 Unidad seleccionada: {{ unit }}</p>
+  <p>📦 Unidad seleccionada: {{ unidad }}</p>
 
   <p>🕒 Actualizado: {{ metalData.updated_at }}</p>
-
-
 
 </div>
