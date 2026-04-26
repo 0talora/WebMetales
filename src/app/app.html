@@ -1,0 +1,53 @@
+<h2>Cotización de Metales</h2>
+
+<label>Metal:</label>
+<select [(ngModel)]="selectedMetal" (change)="onMetalChange()">
+  <option value="XAU">Oro</option>
+  <option value="XAG">Plata</option>
+  <option value="XPT">Platino</option>
+  <option value="XPD">Paladio</option>
+</select>
+
+<br><br>
+
+<label>Unidad:</label>
+<select [(ngModel)]="unit">
+  <option value="gram">Gramo</option>
+  <option value="oz">Onza</option>
+  <option value="kg">Kilogramo</option>
+  <option value="lb">Libra</option>
+</select>
+
+<br><br>
+
+<label>Cantidad:</label>
+<input type="number" [(ngModel)]="quantity" min="0" />
+
+<br><br>
+
+<div *ngIf="selectedMetal === 'XAU'">
+  <label>Quilates:</label>
+  <select [(ngModel)]="karat">
+    <option value="24">24K</option>
+    <option value="22">22K</option>
+    <option value="18">18K</option>
+    <option value="14">14K</option>
+  </select>
+</div>
+
+<hr>
+  <p>📊 Cantidad: {{ quantity }}</p>
+
+  <p>💎 Precio total: {{ getTotalPrice() | number:'1.2-2' }} €</p>
+<div *ngIf="metalData">
+
+  <p>💰 Precio base (g): {{ metalData.price_per_gram }} €</p>
+  <p>🏅 Precio onza: {{ metalData.price_per_troy_ounce }} €</p>
+
+  <p>📦 Unidad seleccionada: {{ unit }}</p>
+
+  <p>🕒 Actualizado: {{ metalData.updated_at }}</p>
+
+
+
+</div>
