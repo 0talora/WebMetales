@@ -1,55 +1,100 @@
-<h2>Cotización de Metales</h2>
+@let text = preferences.text();
+<header class="top">
+  <span class="brand">otalora</span>
+  <div class="preferences">
+    <label>
+      {{ text.theme }}
+      <select [ngModel]="preferences.theme()" (ngModelChange)="preferences.setTheme($event)">
+        <option value="system">{{ text.system }}</option>
+        <option value="light">{{ text.light }}</option>
+        <option value="dark">{{ text.dark }}</option>
+      </select>
+    </label>
+    <label>
+      {{ text.language }}
+      <select [ngModel]="preferences.languageChoice()" (ngModelChange)="preferences.setLanguage($event)">
+        <option value="system">{{ text.system }}</option>
+        @for (option of languageOptions; track option[0]) {
+          <option [value]="option[0]" [attr.lang]="option[0]">{{ option[1] }}</option>
+        }
+      </select>
+    </label>
+  </div>
+</header>
 
-<label>Metal:</label>
-<select [(ngModel)]="metalSeleccionado" (ngModelChange)="onMetalChange()">
-  <option value="XAU">Oro</option>
-  <option value="XAG">Plata</option>
-  <option value="XPT">Platino</option>
-  <option value="XPD">Paladio</option>
-</select>
+<main>
+  <header class="intro">
+    <div>
+      <h1>{{ text.title }}</h1>
+      <p>{{ text.description }}</p>
+    </div>
+    <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <path d="M20 22h24l8 22H12z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M24 37h16" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </header>
 
-<br><br>
+  <section class="calculator" [attr.aria-label]="text.title">
+    <div class="fields">
+      <label for="metal">{{ text.metal }}
+        <select id="metal" [ngModel]="metal()" (ngModelChange)="selectMetal($event)">
+          @for (code of metals; track code) {
+            <option [value]="code">{{ text.metals[code] }} · {{ code }}</option>
+          }
+        </select>
+      </label>
+      <label for="unit">{{ text.unit }}
+        <select id="unit" [ngModel]="unit()" (ngModelChange)="unit.set($event)">
+          @for (option of units; track option) {
+            <option [value]="option">{{ text.units[option] }}</option>
+          }
+        </select>
+      </label>
+      <label for="amount">{{ text.amount }}
+        <input id="amount" type="number" inputmode="decimal" step="any" min="0"
+          [ngModel]="amount()" (ngModelChange)="amount.set($event)"
+          [attr.aria-invalid]="amount() === null || amount()! <= 0 ? 'true' : null">
+      </label>
+      @if (metal() === 'XAU') {
+        <label for="purity">{{ text.purity }}
+          <select id="purity" [ngModel]="purity()" (ngModelChange)="purity.set($event)">
+            @for (value of purities; track value) {
+              <option [ngValue]="value">{{ value }} K</option>
+            }
+          </select>
+        </label>
+      }
+    </div>
 
-<label>Unidad:</label>
-<select [(ngModel)]="unidad">
-  <option value="g">Gramos</option>
-  <option value="oz">Onza</option>
-  <option value="kg">Kilogramo</option>
-  <option value="lb">Libra</option>
-</select>
+    <div class="result">
+      <h2>{{ text.estimate }}</h2>
+      <div role="status">
+        @switch (state().status) {
+          @case ('loading') { <p>{{ text.loading }}</p> }
+          @case ('error') { <p>{{ text.error }}</p> }
+          @case ('ready') {
+            @let total = estimate();
+            @if (total === null) { <p>{{ text.invalid }}</p> }
+            @else { <p class="total">{{ currency().format(total) }}</p> }
+          }
+        }
+      </div>
 
-<br><br>
+      @if (state().status === 'error') {
+        <button type="button" (click)="refresh()">{{ text.retry }}</button>
+      }
+    </div>
 
-<label>Cantidad:</label>
-<input type="number" [(ngModel)]="cantidad" min="1" step="0.01" />
-<br><br>
+    @if (quote(); as current) {
+      <dl>
+        <div><dt>{{ text.gram }}</dt><dd>{{ currency().format(current.eurosPerOunce / gramsPerOunce) }}</dd></div>
+        <div><dt>{{ text.ounce }}</dt><dd>{{ currency().format(current.eurosPerOunce) }}</dd></div>
+        <div><dt>{{ text.updated }}</dt><dd><time [attr.datetime]="current.updatedAt">{{ formatDate(current.updatedAt, timestamp()) }}</time></dd></div>
+        <div><dt>{{ text.exchange }}</dt><dd><time [attr.datetime]="current.exchangeDate">{{ formatDate(current.exchangeDate, date()) }}</time></dd></div>
+      </dl>
+    }
+    <p class="sources">{{ text.source }} · <a href="https://gold-api.com/docs">Gold API</a> · <a href="https://frankfurter.dev/">Frankfurter</a></p>
+  </section>
+</main>
 
-<div *ngIf="metalSeleccionado === 'XAU'">
-  <label>Quilates:</label>
-  <select [(ngModel)]="kilates">
-    <option [ngValue]="24">24K</option>
-    <option [ngValue]="22">22K</option>
-    <option [ngValue]="20">20K</option>
-    <option [ngValue]="18">18K</option>
-    <option [ngValue]="16">16K</option>
-    <option [ngValue]="14">14K</option>
-    <option [ngValue]="12">12K</option>
-    <option [ngValue]="10">10K</option>
-  </select>
-</div>
-
-<hr>
-  <p>📊 Cantidad: {{ cantidad }}</p>
-
-  <p>💎 Precio total: {{ getTotalPrice() | number:'1.2-2' }} €</p>
-<div *ngIf="metalData">
-<p>Precio compra: {{ metalData.ask }} €</p>
-<p>Precio venta: {{ metalData.bid }} €</p>
-  <p>💰 Precio base (g): {{ metalData.price_per_gram }} €</p>
-  <p>🏅 Precio onza: {{ metalData.price_per_troy_ounce }} €</p>
-
-  <p>📦 Unidad seleccionada: {{ unidad }}</p>
-
-  <p>🕒 Actualizado: {{ metalData.updated_at }}</p>
-
-</div>
+<footer>{{ text.developed }} <a href="https://angular.dev/">Angular</a> {{ text.by }}</footer>

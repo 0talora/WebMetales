@@ -1,91 +1,76 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MetalsService } from './services/metals-service';
+import { BehaviorSubject, catchError, map, of, startWith, switchMap } from 'rxjs';
+import { languages, Preferences } from './preferences';
+import { gramsPerUnit, Metal, metals, MetalsService, Quote } from './services/metals-service';
+
+type QuoteState = { status: 'loading' | 'error' } | { status: 'ready'; quote: Quote };
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrl: './app.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  private readonly service = inject(MetalsService);
+  private readonly requestedMetal = new BehaviorSubject<Metal>('XAU');
+  readonly preferences = inject(Preferences);
+  readonly languageOptions = Object.entries(languages);
+  readonly metals = metals;
+  readonly gramsPerOunce = gramsPerUnit.oz;
+  readonly units = Object.keys(gramsPerUnit) as (keyof typeof gramsPerUnit)[];
+  readonly purities = [24, 22, 20, 18, 16, 14, 12, 10];
+  readonly metal = signal<Metal>('XAU');
+  readonly unit = signal<keyof typeof gramsPerUnit>('g');
+  readonly amount = signal<number | null>(1);
+  readonly purity = signal(24);
+  readonly state = toSignal(this.requestedMetal.pipe(
+    switchMap(metal => this.service.getQuote(metal).pipe(
+      map((quote): QuoteState => ({ status: 'ready', quote })),
+      catchError(() => of<QuoteState>({ status: 'error' })),
+      startWith<QuoteState>({ status: 'loading' })
+    ))
+  ), { requireSync: true });
 
-  private metalsService = inject(MetalsService);
-
-  metalData: any;
-
-  metalSeleccionado: string = 'XAU';
-  unidad: string = 'g';
-  kilates: number = 24;
-  cantidad: number = 1;
-  ngOnInit() {
-    this.loadMetal();
-  }
-
-loadMetal() {
-  this.metalsService.getMetals().subscribe({
-    next: (res) => {
-      console.log(res);
-
-      switch (this.metalSeleccionado) {
-        case 'XAU':
-          this.metalData = res.gold.EUR;
-          break;
-
-        case 'XAG':
-          this.metalData = res.silver.EUR;
-          break;
-
-        case 'XPT':
-          this.metalData = res.platinum.EUR;
-          break;
-
-        case 'XPD':
-          this.metalData = res.palladium.EUR;
-          break;
-      }
-    },
-    error: (err) => console.error(err)
+  readonly quote = computed(() => {
+    const state = this.state();
+    return state.status === 'ready' ? state.quote : null;
   });
-}
 
-  onMetalChange() {
-    this.loadMetal();
+  readonly estimate = computed(() => {
+    const quote = this.quote();
+    const amount = this.amount();
+    if (!quote || amount === null || !Number.isFinite(amount) || amount <= 0) return null;
+
+    const purity = this.metal() === 'XAU' ? this.purity() / 24 : 1;
+    const total = quote.eurosPerOunce / gramsPerUnit.oz * gramsPerUnit[this.unit()] * amount * purity;
+    return Number.isFinite(total) ? total : null;
+  });
+
+  readonly currency = computed(() => new Intl.NumberFormat(this.preferences.language(), {
+    style: 'currency', currency: 'EUR'
+  }));
+
+  readonly timestamp = computed(() => new Intl.DateTimeFormat(this.preferences.language(), {
+    dateStyle: 'medium', timeStyle: 'short'
+  }));
+
+  readonly date = computed(() => new Intl.DateTimeFormat(this.preferences.language(), {
+    dateStyle: 'medium', timeZone: 'UTC'
+  }));
+
+  formatDate(value: string, formatter: Intl.DateTimeFormat): string {
+    return formatter.format(Date.parse(value));
   }
 
-  getTotalPrice(): number {
-    if (!this.metalData) return 0;
-
-    let precio = Number(this.metalData.price_per_gram);
-    const cantidad = Number(this.cantidad);
-
-    switch (this.unidad) {
-      case 'g':
-        precio = Number(this.metalData.price_per_gram);
-        break;
-
-      case 'oz':
-        precio = Number(this.metalData.price_per_troy_ounce);
-        break;
-
-      case 'kg':
-        precio = Number(this.metalData.price_per_gram) * 1000;
-        break;
-
-      case 'lb':
-        precio = Number(this.metalData.price_per_gram) * 453.592;
-        break;
-    }
-
-    if (this.metalSeleccionado === 'XAU') {
-      precio = precio * (this.kilates / 24);
-    }
-
-    return precio * cantidad;
+  selectMetal(metal: Metal): void {
+    this.metal.set(metal);
+    this.refresh();
   }
 
-  protected readonly title = signal('webMetales');
+  refresh(): void {
+    this.requestedMetal.next(this.metal());
+  }
 }

@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: Doto;
+  src: url('/assets/fonts/doto.woff2') format('woff2');
+  font-weight: 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/assets/fonts/space-grotesk.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#f7f6f3, #000);
+  --panel: light-dark(#fff, #101010);
+  --control: light-dark(#f1efea, #222);
+  --border: light-dark(#77746d, #888);
+  --line: light-dark(#c8c6c1, #424242);
+  --ink: light-dark(#171717, #faf9f5);
+  --muted: light-dark(#4a4742, #ccc);
+  --accent: light-dark(#ae131a, #ff6267);
+  --dots: light-dark(#d8d5cf, #2b2b2b);
+}
+
+:root[data-theme='light'] { color-scheme: light; }
+:root[data-theme='dark'] { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg) radial-gradient(circle, var(--dots) 1px, transparent 1.2px) 0 0 / 24px 24px;
+  color: var(--ink);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+input, select, button { font: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
