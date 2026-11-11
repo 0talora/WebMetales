@@ -1,26 +1,26 @@
 @let text = preferences.text();
 <header class="top">
   <span class="brand">otalora</span>
-  <div class="preferences">
-    <label>
-      {{ text.theme }}
-      <select [ngModel]="preferences.theme()" (ngModelChange)="preferences.setTheme($event)">
-        <option value="system">{{ text.system }}</option>
-        <option value="light">{{ text.light }}</option>
-        <option value="dark">{{ text.dark }}</option>
-      </select>
-    </label>
-    <label>
-      {{ text.language }}
-      <select [ngModel]="preferences.languageChoice()" (ngModelChange)="preferences.setLanguage($event)">
-        <option value="system">{{ text.system }}</option>
-        @for (option of languageOptions; track option[0]) {
-          <option [value]="option[0]" [attr.lang]="option[0]">{{ option[1] }}</option>
-        }
-      </select>
-    </label>
-  </div>
 </header>
+<div class="preferences">
+  <label>
+    {{ text.theme }}
+    <select [ngModel]="preferences.theme()" (ngModelChange)="preferences.setTheme($event)">
+      <option value="system">{{ text.system }}</option>
+      <option value="light">{{ text.light }}</option>
+      <option value="dark">{{ text.dark }}</option>
+    </select>
+  </label>
+  <label>
+    {{ text.language }}
+    <select [ngModel]="preferences.languageChoice()" (ngModelChange)="preferences.setLanguage($event)">
+      <option value="system">{{ text.system }}</option>
+      @for (option of languageOptions; track option[0]) {
+        <option [value]="option[0]" [attr.lang]="option[0]">{{ option[1] }}</option>
+      }
+    </select>
+  </label>
+</div>
 
 <main>
   <header class="intro">
