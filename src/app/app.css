@@ -13,18 +13,11 @@
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
   font: 900 1.75rem/1 Doto, 'Space Mono', monospace;
   letter-spacing: .04em;
-}
-
-.brand::after {
-  content: '';
-  display: inline-block;
-  width: .45rem;
-  height: .45rem;
-  margin-inline-start: .4rem;
-  border-radius: 50%;
-  background: var(--accent);
 }
 
 main {

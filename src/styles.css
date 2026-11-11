@@ -127,3 +127,18 @@ a { color: var(--accent); }
   outline: 2px solid light-dark(#ae131a, #ff4a4f);
   outline-offset: 2px;
 }
+
+.led {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #d71921;
+  box-shadow: 0 0 0.5rem #d71921;
+  animation: led 2.4s steps(1) infinite;
+}
+@keyframes led { 0%, 70% { opacity: 1; } 71%, 100% { opacity: 0.25; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .led { animation: none; }
+}
