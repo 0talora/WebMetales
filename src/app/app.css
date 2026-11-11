@@ -4,7 +4,7 @@
   min-height: 100vh;
 }
 
-.top, footer {
+.top {
   background: var(--panel);
   padding: .75rem clamp(1rem, 4vw, 2rem);
 }
@@ -108,10 +108,9 @@ select, button { cursor: pointer; }
 .result { margin-block-start: 1rem; padding-block-start: 1rem; border-top: 1px solid var(--line); }
 .result button { margin-block-start: .5rem; }
 .total { font-size: clamp(1.65rem, 6vw, 3.5rem); font-weight: 700; overflow-wrap: anywhere; }
-dt, .sources, footer { color: var(--muted); }
+dt, .sources { color: var(--muted); }
 dd { margin: 0; overflow-wrap: anywhere; }
 .sources { margin-block-start: 1rem; font-size: .875rem; }
-footer { border-top: 1px solid var(--line); text-align: center; }
 
 @media (max-width: 34rem) {
   .fields, .intro { grid-template-columns: minmax(0, 1fr); }

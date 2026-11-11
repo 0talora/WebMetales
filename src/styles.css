@@ -1,4 +1,10 @@
 @font-face {
+  font-family: 'Space Mono';
+  src: url('/assets/fonts/space-mono.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
   font-family: Doto;
   src: url('/assets/fonts/doto.woff2') format('woff2');
   font-weight: 900;
@@ -46,14 +52,7 @@ a { color: var(--accent); }
   margin: 2rem auto;
 }
 
-.search-languages {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem 1rem;
-  margin-block: 1.5rem;
-}
-
-.search-languages a, .search-fallback a {
+.search-fallback a {
   color: inherit;
   text-decoration: underline;
 }
@@ -62,4 +61,32 @@ a { color: var(--accent); }
   max-width: 72ch;
   margin-block-start: 2rem;
   overflow-wrap: anywhere;
+}
+
+.site-footer {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 1rem;
+  border-top: 1px solid #2b2b2b;
+  background: #0b0b0b;
+  color: #d4d4d4;
+  text-align: center;
+  font: .875rem/1.5 'Space Mono', ui-monospace, monospace;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer a {
+  color: #ff4a4f;
+}
+
+.site-footer .idiomas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem 1rem;
+  margin-block-end: .6rem;
 }

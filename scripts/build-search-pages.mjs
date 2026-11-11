@@ -8,6 +8,28 @@ const template = await readFile(index, 'utf8');
 const content = JSON.parse(await readFile(new URL('../src/app/search-content.json', import.meta.url), 'utf8'));
 const names = { es: 'Español', en: 'English', fr: 'Français', de: 'Deutsch' };
 const languages = Object.keys(names);
+const footerCopy = {
+  "es": {
+    "label": "Idioma",
+    "developed": "Desarrollado con",
+    "by": "por Pablo Otalora"
+  },
+  "en": {
+    "label": "Language",
+    "developed": "Built with",
+    "by": "by Pablo Otalora"
+  },
+  "fr": {
+    "label": "Langue",
+    "developed": "Développé avec",
+    "by": "par Pablo Otalora"
+  },
+  "de": {
+    "label": "Sprache",
+    "developed": "Entwickelt mit",
+    "by": "von Pablo Otalora"
+  }
+};
 const pathFor = language => language === 'es' ? '/' : `/${language}/`;
 const urlFor = language => origin + pathFor(language);
 const escape = value => value.replace(/[&<>"']/g, char => ({
@@ -49,8 +71,11 @@ for (const language of languages) {
       ${page.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('\n')}
       ${projects ? `<ul>${projects}</ul>` : ''}
     </section>
-    <nav class="search-languages">${links}</nav>
-  </main>`;
+  </main>
+  <footer class="site-footer">
+    <nav class="idiomas" aria-label="${footerCopy[language].label}">${links}</nav>
+    <p>${footerCopy[language].developed} <a href="https://angular.dev/">Angular</a> ${footerCopy[language].by}</p>
+  </footer>`;
 
   const html = baseHead
     .replace('<html lang="es"', `<html lang="${language}" data-page-language="${language}"`)

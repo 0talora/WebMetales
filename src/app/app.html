@@ -102,12 +102,14 @@
       <p>{{ paragraph }}</p>
     }
   </section>
-  <nav class="search-languages" [attr.aria-label]="preferences.text().language">
+</main>
+
+<footer class="site-footer">
+  <nav class="idiomas" [attr.aria-label]="preferences.text().language">
     @for (code of preferences.languageCodes; track code) {
       <a [href]="preferences.languagePath(code)" [attr.hreflang]="code" [attr.lang]="code"
         [attr.aria-current]="code === preferences.language() ? 'page' : null">{{ preferences.languages[code] }}</a>
     }
   </nav>
-</main>
-
-<footer>{{ text.developed }} <a href="https://angular.dev/">Angular</a> {{ text.by }}</footer>
+  <p>{{ text.developed }} <a href="https://angular.dev/">Angular</a> {{ text.by }}</p>
+</footer>
