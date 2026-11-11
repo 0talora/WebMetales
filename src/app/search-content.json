@@ -1,0 +1,38 @@
+{
+  "es": {
+    "title": "Precio del oro y la plata en euros | Calculadora de metales",
+    "description": "Consulta la cotización del oro, la plata, el platino y el paladio en euros por gramo u onza troy. Calcula el valor por peso y los quilates del oro.",
+    "heading": "Cómo calcular el valor del oro por gramo",
+    "paragraphs": [
+      "Elige oro, introduce el peso en gramos y selecciona los quilates. La calculadora ajusta el valor del metal según su pureza. Una onza troy equivale a unos 31,10 gramos.",
+      "El importe es una estimación del valor del metal. El precio de compra o venta puede variar por márgenes, comisiones y otros costes."
+    ]
+  },
+  "en": {
+    "title": "Gold and Silver Prices in Euros | Precious Metal Calculator",
+    "description": "Check reference prices for gold, silver, platinum and palladium in euros per gram or troy ounce. Estimate metal value by weight and gold purity.",
+    "heading": "How to estimate the value of gold per gram",
+    "paragraphs": [
+      "Select gold, enter the weight in grams and choose the karat rating. The calculator adjusts the metal value for purity. One troy ounce is about 31.10 grams.",
+      "This is an estimate of metal value. Buy and sell prices may vary with dealer margins, fees and other costs."
+    ]
+  },
+  "fr": {
+    "title": "Cours de l’or et de l’argent en euros | Calculateur de métaux",
+    "description": "Consultez les cours de l’or, de l’argent, du platine et du palladium en euros par gramme ou once troy.",
+    "heading": "Estimer la valeur de l’or au gramme",
+    "paragraphs": [
+      "Sélectionnez l’or, saisissez le poids en grammes et choisissez le nombre de carats. Le calcul tient compte de la pureté. Une once troy vaut environ 31,10 grammes.",
+      "Le montant est indicatif. Les prix de vente et d’achat peuvent varier en fonction des marges et des frais."
+    ]
+  },
+  "de": {
+    "title": "Gold- und Silberpreis in Euro | Edelmetallrechner",
+    "description": "Prüfe den Richtpreis für Gold, Silber, Platin und Palladium in Euro pro Gramm oder Feinunze.",
+    "heading": "Goldwert pro Gramm berechnen",
+    "paragraphs": [
+      "Wähle Gold, gib das Gewicht in Gramm ein und wähle den Karatwert. Der Rechner berücksichtigt den Feingehalt. Eine Feinunze entspricht rund 31,10 Gramm.",
+      "Der Betrag ist eine Schätzung. An- und Verkaufspreise können aufgrund von Margen und Gebühren abweichen."
+    ]
+  }
+}

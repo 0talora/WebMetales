@@ -95,6 +95,19 @@
     }
     <p class="sources">{{ text.source }} · <a href="https://gold-api.com/docs">Gold API</a> · <a href="https://frankfurter.dev/">Frankfurter</a></p>
   </section>
+
+  <section class="search-guide">
+    <h2>{{ preferences.searchText().heading }}</h2>
+    @for (paragraph of preferences.searchText().paragraphs; track $index) {
+      <p>{{ paragraph }}</p>
+    }
+  </section>
+  <nav class="search-languages" [attr.aria-label]="preferences.text().language">
+    @for (code of preferences.languageCodes; track code) {
+      <a [href]="preferences.languagePath(code)" [attr.hreflang]="code" [attr.lang]="code"
+        [attr.aria-current]="code === preferences.language() ? 'page' : null">{{ preferences.languages[code] }}</a>
+    }
+  </nav>
 </main>
 
 <footer>{{ text.developed }} <a href="https://angular.dev/">Angular</a> {{ text.by }}</footer>

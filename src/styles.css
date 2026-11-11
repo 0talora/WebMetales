@@ -40,3 +40,26 @@ body {
 input, select, button { font: inherit; }
 a { color: var(--accent); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.search-fallback {
+  width: min(calc(100% - 2rem), 65rem);
+  margin: 2rem auto;
+}
+
+.search-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin-block: 1.5rem;
+}
+
+.search-languages a, .search-fallback a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.search-guide {
+  max-width: 72ch;
+  margin-block-start: 2rem;
+  overflow-wrap: anywhere;
+}

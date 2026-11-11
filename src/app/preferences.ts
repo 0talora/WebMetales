@@ -1,3 +1,4 @@
+import searchContent from './search-content.json';
 import { DOCUMENT } from '@angular/common';
 import { computed, DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
@@ -29,11 +30,15 @@ function browserLanguage(): Language {
 export class Preferences {
   private readonly document = inject(DOCUMENT);
   private readonly meta = inject(Meta);
+  private readonly pageLanguage = this.document.documentElement.dataset['pageLanguage'];
+  readonly languages = languages;
+  readonly languageCodes = Object.keys(languages) as Language[];
   private readonly detected = signal(browserLanguage());
   private readonly savedLanguage = read('web-metales-language');
   private readonly savedTheme = read('web-metales-theme');
   readonly languageChoice = signal<LanguageChoice>(
-    this.savedLanguage && isLanguage(this.savedLanguage) ? this.savedLanguage : 'system'
+    this.pageLanguage && isLanguage(this.pageLanguage) ? this.pageLanguage :
+      this.savedLanguage && isLanguage(this.savedLanguage) ? this.savedLanguage : 'system'
   );
   readonly theme = signal<Theme>(
     this.savedTheme === 'light' || this.savedTheme === 'dark' ? this.savedTheme : 'system'
@@ -43,6 +48,12 @@ export class Preferences {
     return choice === 'system' ? this.detected() : choice;
   });
   readonly text = computed(() => copy[this.language()]);
+
+  readonly searchText = computed(() => searchContent[this.language()]);
+
+  languagePath(language: Language): string {
+    return language === 'es' ? '/' : `/${language}/`;
+  }
 
   constructor() {
     const onLanguageChange = () => this.detected.set(browserLanguage());
@@ -54,14 +65,19 @@ export class Preferences {
       if (theme === 'system') root.removeAttribute('data-theme');
       else root.dataset['theme'] = theme;
       root.lang = this.language();
-      const { title, description } = this.text();
-      this.document.title = title + ' | otalora';
+      const { title, description } = this.searchText();
+      this.document.title = title;
       this.meta.updateTag({ name: 'description', content: description });
     });
   }
 
   setLanguage(value: string): void {
     if (value !== 'system' && !isLanguage(value)) return;
+    if (this.pageLanguage) {
+      const language = value === 'system' ? this.detected() : value;
+      if (language !== this.language()) this.document.location.assign(this.languagePath(language));
+      return;
+    }
     this.languageChoice.set(value);
     save('web-metales-language', value);
   }

@@ -57,3 +57,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Build for deployment
+
+Run `npm run build` and publish `dist/webMetales/browser`. This creates static pages at `/`, `/en/`, `/fr/` and `/de/`. Use directory indexes and an HTTP 404 for unknown paths. Submit the published `/sitemap.xml` in Google Search Console.
