@@ -45,6 +45,25 @@ const baseHead = template
   .replace(/<title>[\s\S]*?<\/title>/i, '<!-- page-search-head -->')
   .replace(/\s*<(?:meta\s+(?:name="(?:description|twitter:(?:title|description))"|property="og:(?:url|title|description|locale|type)")|link\s+rel="canonical")[^>]*>/gi, '');
 
+const startup = `<style>
+  html[data-app-startup="pending"] [data-app-fallback],
+  [data-app-fallback] + app-root:empty,
+  html[data-app-startup="failed"] [data-app-fallback] + app-root { display: none; }
+</style>
+<script>
+  document.documentElement.dataset.appStartup = 'pending';
+  window.addEventListener('error', function (event) {
+    if (event.target instanceof HTMLScriptElement) {
+      document.documentElement.dataset.appStartup = 'failed';
+    }
+  }, true);
+  window.setTimeout(function () {
+    if (document.documentElement.dataset.appStartup === 'pending') {
+      document.documentElement.dataset.appStartup = 'failed';
+    }
+  }, 10000);
+</script>`;
+
 for (const language of languages) {
   const page = content[language];
   const url = urlFor(language);
@@ -80,7 +99,8 @@ for (const language of languages) {
   const html = baseHead
     .replace('<html lang="es"', `<html lang="${language}" data-page-language="${language}"`)
     .replace('<!-- page-search-head -->', () => head)
-    .replace(/<app-root>[\s\S]*?<\/app-root>/, () => `<app-root>${body}</app-root>`)
+    .replace('</head>', () => startup + '\n</head>')
+    .replace(/<app-root>[\s\S]*?<\/app-root>/, () => `<div data-app-fallback>${body}</div><app-root></app-root>`)
     .replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/, (_, json) => {
       const profile = JSON.parse(json);
       return `<script type="application/ld+json">${JSON.stringify({ ...profile, url, inLanguage: language })}</script>`;
